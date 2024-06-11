@@ -10,6 +10,15 @@ const getAllNovels = async (req, res) => {
     }
 }
 
+const getSelectTitle = async (req, res) => {
+    try {
+        const selectTitle = await novelSchema.find({title: req.params.title});
+        res.status(200).json(selectTitle);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
 const postNovel = async (req, res) => {
     try {
         const postNovel = await novelSchema.create(req.body);
@@ -31,18 +40,46 @@ const getSingle = async (req, res) => {
     }
 }
 
-const updateNovel = async (req, res) => {
+const updateTitleNovel = async (req, res) => {
     try {
-        const updateNovel = await novelSchema.findOneAndUpdate(
-            { _id: req.params.id},
-            req.body,
-            {
-                new: true
-            });
-        if(!updateNovel) {
-            res.status(404).json(`${req.params.id}は存在しません`)
+        const response = await novelSchema.updateMany(
+            { title: req.query.oldTitle }, 
+            { $set: {title: req.query.newTitle} }
+        );
+        if(!response) {
+            res.status(404).json(`${req.query.oldTitle}は存在しません`)
         }
-        res.status(200).json(updateNovel);
+        res.status(200).json(response);
+    } catch (err){
+        res.status(500).json(err);
+    }
+}
+
+const updateIndexNovel = async (req, res) => {
+    try {
+        const response = await novelSchema.updateMany(
+            { index: req.query.oldIndex }, 
+            { $set: {index: req.query.newIndex} }
+        );
+        if(!response) {
+            res.status(404).json(`${req.query.oldIndex}は存在しません`)
+        }
+        res.status(200).json(response);
+    } catch (err){
+        res.status(500).json(err);
+    }
+}
+
+const updateTextNovel = async (req, res) => {
+    try {
+        const response = await novelSchema.updateMany(
+            { text: req.query.oldText }, 
+            { $set: {text: req.query.newText} }
+        );
+        if(!response) {
+            res.status(404).json(`${req.query.oldText}は存在しません`)
+        }
+        res.status(200).json(response);
     } catch (err){
         res.status(500).json(err);
     }
@@ -50,20 +87,36 @@ const updateNovel = async (req, res) => {
 
 const deleteNovel = async (req, res) => {
     try {
-        const deleteNovel = await novelSchema.findOneAndDelete({ _id: req.params.id});
-        if(!deleteNovel) {
+        const response = await novelSchema.findOneAndDelete({ _id: req.params.id});
+        if(!response) {
             res.status(404).json(`${req.params.id}は存在しません`)
         }
-        res.status(200).json(deleteNovel);
+        res.status(200).json(response);
     } catch (err){
+        console.log(err)
+    }
+}
+
+const deleteAllNovel = async (req, res) => {
+    try {
+        const response = await novelSchema.deleteMany({title: req.query.title});
+        if(!response) {
+            return res.status(404).json({message: `${req.query.title}は存在しません`});
+        }
+        res.status(200).json(response);
+    } catch (err) {
         console.log(err)
     }
 }
 
 module.exports = {
     getAllNovels,
+    getSelectTitle,
     postNovel,
     getSingle,
-    updateNovel,
-    deleteNovel
+    updateTitleNovel,
+    updateIndexNovel,
+    updateTextNovel,
+    deleteNovel,
+    deleteAllNovel
 }
