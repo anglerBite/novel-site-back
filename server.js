@@ -15,6 +15,12 @@ app.use(cors());
 app.use('/novel', routes);
 app.use('/login', login);
 
+// デフォルトルートの設定
+app.get('/', (req, res) => {
+    res.send('API is working');
+});
+
+
 //データベース接続とサーバー起動
 const connectDB = async () => {
     try {
