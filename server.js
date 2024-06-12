@@ -16,10 +16,10 @@ app.use('/novel', routes);
 app.use('/login', login);
 
 //追加
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'frontend','build')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'));
 });
 
 //データベース接続とサーバー起動
