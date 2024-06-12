@@ -11,7 +11,9 @@ require('dotenv').config();
 app.use(express.json());
 
 //ルーティング
-app.use(cors());
+app.use(cors({
+    origin: '*'
+}));
 app.use('/novel', routes);
 app.use('/login', login);
 
